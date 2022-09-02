@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import parser_KlinCity, parser_KlinPark 
 
 
-def parse_events(urls_list: list):
+def parse_urls_from_list(urls_list: list):
     """
     Returns list of Events
     """
@@ -16,16 +16,17 @@ def parse_events(urls_list: list):
 
     for url in urls_list:
         response = requests.get(url)
-        # !!! какая-то проблема с requests
+        # !!! какая-то проблема с requests при парсинге klinCity
 
-        soup = BeautifulSoup(response.text)
+        if respones.status_code != 200:
+            print("!!! Неполадки при парсинге " + url)
+
+        soup = BeautifulSoup(response.text, features="html.parser")
 
         if url == "http://www.klin-park.ru/afisha/":
             events_list.extend(parser_KlinPark.run(soup))
         if url == "https://www.klincity.ru/events/":
-            pass
             events_list.extend(parser_KlinCity.run(soup))
 
     return events_list
 
-parse_events(config.urls_for_parsing)
