@@ -2,7 +2,7 @@ import requests
 import datetime
 from bs4 import BeautifulSoup
 
-from .. import entities
+import entities
 
 def run(soup: BeautifulSoup):
     events_list = []

@@ -4,7 +4,7 @@ import requests
 import datetime
 
 from bs4 import BeautifulSoup
-from minor_parsers import klinPark_parser, klinCity_parser
+import parser_KlinCity, parser_KlinPark 
 
 
 def parse_events(urls_list: list):
@@ -21,10 +21,10 @@ def parse_events(urls_list: list):
         soup = BeautifulSoup(response.text)
 
         if url == "http://www.klin-park.ru/afisha/":
-            events_list.extend(klinPark_parser.run(soup))
+            events_list.extend(parser_KlinPark.run(soup))
         if url == "https://www.klincity.ru/events/":
             pass
-            events_list.extend(klinCity_parser.run(soup))
+            events_list.extend(parser_KlinCity.run(soup))
 
     return events_list
 
