@@ -18,7 +18,7 @@ def parse_urls_from_list(urls_list: list):
         response = requests.get(url)
         # !!! какая-то проблема с requests при парсинге klinCity
 
-        if respones.status_code != 200:
+        if response.status_code != 200:
             print("!!! Неполадки при парсинге " + url)
 
         soup = BeautifulSoup(response.text, features="html.parser")
@@ -29,4 +29,3 @@ def parse_urls_from_list(urls_list: list):
             events_list.extend(parser_KlinCity.run(soup))
 
     return events_list
-
