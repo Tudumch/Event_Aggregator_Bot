@@ -20,3 +20,22 @@ def readTokenFromFile(filePath):
         breakpoint()
 
 token_discord = readTokenFromFile(discord_bot_token_filePath)
+
+
+# ---------------------------------------------------------------------- 
+# DEBUG SECTION
+# ---------------------------------------------------------------------- 
+from entities import Event
+import datetime
+list_of_test_events = [Event(432, "День дверей", 
+    datetime.date(2022, 3, 21), datetime.date(2022, 9, 5)), 
+    Event(59, "День замков", 
+        datetime.date(2022, 6, 1), datetime.date(2022, 9, 5)), 
+    Event(923, "День окон", 
+        datetime.date(2022, 12, 28), datetime.date(2022, 9, 5))]
+
+list_of_another_test_events = list_of_test_events.copy()
+
+list_of_another_test_events.append(Event(784, "День крыш", 
+    datetime.date(2022, 6, 17),
+    datetime.date(2022, 9, 5)))
