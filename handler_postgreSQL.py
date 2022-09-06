@@ -88,8 +88,11 @@ def get_events_sheduled_for(number_of_days: int):
 
 
 def clear_overdues():
-    list_of_events_from_db = get_list_of_events_all()
-    # !!! WIP
-
+    "Deletes all events whose dates have already passed"
+    
+    execute_query("""
+            DELETE FROM events
+            WHERE event_date < CURRENT_DATE;
+            """)
 
 
