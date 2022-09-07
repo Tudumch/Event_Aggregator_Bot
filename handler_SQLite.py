@@ -53,7 +53,12 @@ def get_list_of_events_all():
 
 
 def put_list_of_events(list_of_events: list):
-    "Checks is the same events from list already in DB. If not - puts them in DB"
+    """
+    Checks are the same events from list already in DB. 
+    If not - puts them into DB
+
+    Returns list of events, which were added into DB.
+    """
 
     list_of_events_from_db = get_list_of_events_all()
 
@@ -73,6 +78,8 @@ def put_list_of_events(list_of_events: list):
         execute_query("INSERT INTO events(title, event_date) " + 
                 "VALUES('" + event.title + "', '" + str(event.event_date) + 
                 "');")
+
+    return list_of_events
 
 
 def get_events_sheduled_for(number_of_days: int):

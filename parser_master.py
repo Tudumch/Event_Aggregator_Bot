@@ -7,11 +7,12 @@ from bs4 import BeautifulSoup
 import parser_KlinCity, parser_KlinPark 
 
 
-def parse_urls_from_list(urls_list: list):
+def parse_urls_from_config():
     """
     Returns list of Events
     """
 
+    urls_list = config.urls_for_parsing
     events_list = []
 
     for url in urls_list:
