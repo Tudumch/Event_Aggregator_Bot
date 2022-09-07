@@ -4,10 +4,11 @@ urls_for_parsing = ["http://www.klin-park.ru/afisha/"]
 # !!! какая-то проблема при парсиге https://www.klincity.ru/events/
 
 # SQLite
+use_SQLite = True
 lSQL_db_path = "EventsDataBase.db"
 
 # PostgreSQL 
-use_postgreSQL = True
+use_postgreSQL = False
 pSQL_adress = "127.0.0.1"
 pSQL_username = "postgres"
 pSQL_password = ""
