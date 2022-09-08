@@ -4,7 +4,10 @@ import datetime
 import config
 from entities import Event
 
+
 db_path = config.lSQL_db_path
+list_of_new_events = []
+
 
 with sqlite3.connect(db_path) as con: 
     cursor = con.cursor()
@@ -60,6 +63,7 @@ def put_list_of_events(list_of_events: list):
     Returns list of events, which were added into DB.
     """
 
+    global list_of_new_events
     list_of_events_from_db = get_list_of_events_all()
 
     # Check for duplicates in DB
@@ -79,6 +83,7 @@ def put_list_of_events(list_of_events: list):
                 "VALUES('" + event.title + "', '" + str(event.event_date) + 
                 "');")
 
+    list_of_new_events = list_of_events
     return list_of_events
 
 

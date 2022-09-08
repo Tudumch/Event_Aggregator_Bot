@@ -12,7 +12,7 @@ def run(soup: BeautifulSoup):
 
     for raw_event in raw_events_list:
         event_title = raw_event.find('div',
-                                     class_="entry-title").text
+                                     class_="entry-title").text.strip('\n').strip()
 
         raw_event_date = raw_event.find('ul',
                                         class_="entry-meta clearfix").text.strip().split(' ')

@@ -5,6 +5,10 @@ from entities import Event
 from config import (pSQL_adress, pSQL_db_name, pSQL_password, pSQL_username, 
         list_of_test_events, list_of_another_test_events)
 
+
+list_of_new_events = []
+
+
 # Connection to postgreSQL server and create table if not exists:
 with psycopg2.connect(host=pSQL_adress, database=pSQL_db_name,
         user=pSQL_username, password=pSQL_password) as connection:
@@ -55,6 +59,8 @@ def put_list_of_events(list_of_events: list):
     Returns list of events, which were added into DB.
     """
 
+
+    global list_of_new_events
     list_of_events_from_db = get_list_of_events_all()
 
     # Check for duplicates in DB
@@ -74,6 +80,7 @@ def put_list_of_events(list_of_events: list):
                 "VALUES('" + event.title + "', '" + str(event.event_date) + 
                 "');")
 
+    list_of_new_events = list_of_events
     return list_of_events
 
 
