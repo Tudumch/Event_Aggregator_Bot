@@ -40,12 +40,13 @@ def connect_to_db():
 
 
 
-def create_events_table(cursor):
+def create_events_table():
     """
     Connects to DB and checks is there 'events'-table.
     If there is none - create new one.
     """
 
+    cursor = connect_to_db()
     cursor.execute("""
             CREATE TABLE IF NOT EXISTS events(
             id SERIAL PRIMARY KEY,
@@ -80,7 +81,7 @@ def execute_query(query: str):
     return cursor
 
 
-def get_list_of_events(): # TODO: rename to get_list_of_events
+def get_list_of_events(): 
     "Returns list of Events"
 
     events_list = []
@@ -88,7 +89,15 @@ def get_list_of_events(): # TODO: rename to get_list_of_events
     raw_data = execute_query(query).fetchall()
 
     for record in raw_data:
-        events_list.append(Event(record[0], record[1], record[2], record[3]))
+        event_id = record[0]
+        event_title = record[1]
+        event_date = record[2]
+        event_added = record[3]
+        if use_SQLite:
+            event_date = convert_str_to_date(record[2])
+            event_added = convert_str_to_date(record[3])
+
+        events_list.append(Event(event_id, event_title, event_date, event_added))
 
     return events_list
 
@@ -152,10 +161,10 @@ def clear_overdues():
             """)
 
 
+create_events_table()
+
+
+# TODO: delete debug-section
 #---------------------------------------------------------------------- 
 # DEBUG
 #---------------------------------------------------------------------- 
-# Check create_events_table():
-use_postgreSQL = False
-use_SQLite = True
-create_events_table(connect_to_db)

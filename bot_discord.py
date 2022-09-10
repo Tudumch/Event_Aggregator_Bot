@@ -23,5 +23,11 @@ async def start(ctx):
 
 @bot.slash_command()
 async def week(ctx):
-    await ctx.respond(bot_master.get_weekly_list())
+    message = bot_master.get_weekly_list()
+    if len(message) > 0:
+        await ctx.respond(message)
+    else:
+        await ctx.respond("""
+        На следующие 7 дней я не смог найти запланированных мероприятий.
+        """)
 
