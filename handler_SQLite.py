@@ -39,7 +39,7 @@ def execute_query(query: str):
         return cursor
 
 
-def get_list_of_events_all():
+def get_list_of_events():
     "Returns list of Events"
 
     events_list = []
@@ -64,7 +64,7 @@ def put_list_of_events(list_of_events: list):
     """
 
     global list_of_new_events
-    list_of_events_from_db = get_list_of_events_all()
+    list_of_events_from_db = get_list_of_events()
 
     # Check for duplicates in DB
     for db_event in list_of_events_from_db:
@@ -94,7 +94,7 @@ def get_events_sheduled_for(number_of_days: int):
     number_of_days = datetime.timedelta(days=number_of_days)
     zero_day = datetime.timedelta(days=0)
 
-    list_of_events_from_db = get_list_of_events_all()
+    list_of_events_from_db = get_list_of_events()
     filtered_list = []
 
     for event in list_of_events_from_db:
