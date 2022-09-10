@@ -30,7 +30,7 @@ refresh_time = 43200
 
 # SQLite
 use_SQLite = True  # set True if you want use SQLite as Data Base
-lSQL_db_path = "EventsDataBase.db"
+lSQL_db_path = "EventsDataBase.db" # TODO: rename to SQLite_db_name
 
 # PostgreSQL 
 use_postgreSQL = False # set True if you want use postgreSQL as Data Base
