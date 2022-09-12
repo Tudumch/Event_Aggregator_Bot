@@ -9,11 +9,9 @@ import sqlite3
 import psycopg2
 
 
-import config
 from entities import Event
 from config import (use_SQLite, use_postgreSQL, pSQL_adress, pSQL_db_name, 
-        pSQL_password, pSQL_username, list_of_test_events, 
-        list_of_another_test_events, lSQL_db_path)
+        pSQL_password, pSQL_username, SQLite_db_path)
 
 
 list_of_new_events = [] # TODO: проверить можно ли обойтись без этой переменной
@@ -26,7 +24,7 @@ def connect_to_db():
     """
 
     if use_SQLite:
-        with sqlite3.connect(lSQL_db_path) as con: 
+        with sqlite3.connect(SQLite_db_path) as con: 
             cursor = con.cursor()
     elif use_postgreSQL:
         with psycopg2.connect(host=pSQL_adress, database=pSQL_db_name,
@@ -55,6 +53,7 @@ def create_events_table():
             date_added DATE DEFAULT CURRENT_TIMESTAMP
             );
             """)
+    cursor.close()
 
     print("Successful connection to Database.")
 
@@ -168,3 +167,5 @@ create_events_table()
 #---------------------------------------------------------------------- 
 # DEBUG
 #---------------------------------------------------------------------- 
+if __name__ == "__main__":
+    create_events_table()
