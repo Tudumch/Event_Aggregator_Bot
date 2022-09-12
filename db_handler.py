@@ -19,13 +19,14 @@ list_of_new_events = []
 
 def connect_to_db():
     """
-    Check variables from config-file and makes connection to database.
-    Returns cursor-object.
+    Check variables from config-file and creates connection to database.
+    Returns Cursor-object.
     """
 
     if use_SQLite:
         with sqlite3.connect(SQLite_db_path) as con: 
             cursor = con.cursor()
+
     elif use_postgreSQL:
         with psycopg2.connect(host=pSQL_adress, database=pSQL_db_name,
                 user=pSQL_username, password=pSQL_password) as con:
@@ -34,6 +35,7 @@ def connect_to_db():
     else:
         raise ValueError("Didn't set prefered DB in config-file!")
 
+    print("Successful connection to Database.\n")
     return cursor
 
 
@@ -44,25 +46,31 @@ def create_events_table():
     If there is none - create new one.
     """
 
-    cursor = connect_to_db()
-    cursor.execute("""
-            CREATE TABLE IF NOT EXISTS events(
-            id SERIAL PRIMARY KEY,
+    # SQLite and postgres have different types of values for id-row
+    if use_SQLite:
+        id_row = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+    else:
+        id_row = "id SERIAL PRIMARY KEY,"
+
+    query = (" CREATE TABLE IF NOT EXISTS events(" + 
+            id_row + """
             title VARCHAR(200) DEFAULT 'NO_TITLE',
             event_date DATE, 
             date_added DATE DEFAULT CURRENT_TIMESTAMP
             );
             """)
-    cursor.close()
 
-    print("Successful connection to Database.\n")
+    execute_query(query)
+
+    print("'events' table successfuly created!")
 
 
 def convert_str_to_date(string: str):
     """
     This func converts date-string from DB to datetime.data(), because 
     SQLite3 does not do it automaticaly.
-    Returns datetime.date() object
+
+    Returns datetime.date() object.
     """
     
     date_list = list(map(int, string[0:10].split("-")))
@@ -75,13 +83,19 @@ def execute_query(query: str):
     Returns cursor-object with result.
     """
 
-    cursor = connect_to_db()
-    cursor.execute(query)
+    if use_SQLite:
+        with sqlite3.connect(SQLite_db_path) as con: 
+            cursor = con.cursor()
+            cursor.execute(query)
+    else:
+        cursor = connect_to_db()
+        cursor.execute(query)
+
     return cursor
 
 
 def get_list_of_events(): 
-    "Returns list of Events"
+    "Returns list of Events stored in DB."
 
     events_list = []
     query = "SELECT * FROM events ORDER BY event_date"
@@ -98,13 +112,14 @@ def get_list_of_events():
 
         events_list.append(Event(event_id, event_title, event_date, event_added))
 
+    print("Events from DB received!")
     return events_list
 
 
 def put_list_of_events(list_of_events: list):
     """
     Checks are the same events from list already in DB. 
-    If not - puts them into DB
+    If not - puts them into DB.
 
     Returns list of events, which were added into DB.
     """
@@ -129,6 +144,7 @@ def put_list_of_events(list_of_events: list):
 
         for db_event in db_list_of_events:
             if len(filtered_list) == 0: break
+            
             for event in list_of_events:
                 if (event.title == db_event.title 
                         and event.event_date == db_event.event_date):
@@ -146,6 +162,7 @@ def put_list_of_events(list_of_events: list):
                 "VALUES('" + event.title + "', '" + str(event.event_date) + 
                 "');")
 
+    print("Data has wrote into DB successfuly!")
     list_of_new_events = list_of_events
     return list_of_new_events 
 
@@ -184,8 +201,8 @@ create_events_table()
 # DEBUG
 #---------------------------------------------------------------------- 
 if __name__ == "__main__":
-    use_postgreSQL = True
-    use_SQLite = False
     put_list_of_events(list_of_test_events)
+    execute_query("""INSERT INTO events(title, event_date)
+VALUES('sfdsdsfsdf', '2022-09-03')""")
     print("GLOBAL list_of_new_events:", [i.title for i in list_of_new_events])
 

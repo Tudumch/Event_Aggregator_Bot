@@ -29,16 +29,17 @@ refresh_time = 43200
 # ---------------------------------------------------------------------- 
 
 # SQLite
-use_SQLite = False  # set True if you want use SQLite as Data Base
+use_SQLite = True  # set True if you want use SQLite as Data Base
 SQLite_db_path = "EventsDataBase.db"  
 
 # PostgreSQL 
-use_postgreSQL = True # set True if you want use postgreSQL as Data Base
+use_postgreSQL = False # set True if you want use postgreSQL as Data Base
 pSQL_adress = "127.0.0.1"
 pSQL_username = "postgres"
 pSQL_password = ""
 pSQL_db_name = "Event_Aggregator"
 
+#use_SQLite, use_postgreSQL = use_postgreSQL, use_SQLite # TODO: delete this line!
 
 def readTokenFromFile(filePath):
     """Bot-tokens should be saved in external file for security reasons."""
