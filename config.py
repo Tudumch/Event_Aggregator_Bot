@@ -29,11 +29,11 @@ refresh_time = 43200
 # ---------------------------------------------------------------------- 
 
 # SQLite
-use_SQLite = True  # set True if you want use SQLite as Data Base
-SQLite_db_path = "EventsDataBase.db" # TODO: rename to SQLite_db_name
+use_SQLite = False  # set True if you want use SQLite as Data Base
+SQLite_db_path = "EventsDataBase.db"  
 
 # PostgreSQL 
-use_postgreSQL = False # set True if you want use postgreSQL as Data Base
+use_postgreSQL = True # set True if you want use postgreSQL as Data Base
 pSQL_adress = "127.0.0.1"
 pSQL_username = "postgres"
 pSQL_password = ""
@@ -57,7 +57,7 @@ from entities import Event
 import datetime
 
 list_of_test_events = [Event(432, "День дверей", 
-    datetime.date(2022, 3, 21), datetime.date(2022, 9, 5)), 
+    datetime.date(2022, 3, 1), datetime.date(2022, 9, 5)), 
     Event(59, "День замков", 
         datetime.date(2022, 6, 1), datetime.date(2022, 9, 5)), 
     Event(923, "День окон", 

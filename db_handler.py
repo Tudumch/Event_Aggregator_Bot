@@ -11,10 +11,10 @@ import psycopg2
 
 from entities import Event
 from config import (use_SQLite, use_postgreSQL, pSQL_adress, pSQL_db_name, 
-        pSQL_password, pSQL_username, SQLite_db_path)
+        pSQL_password, pSQL_username, SQLite_db_path, list_of_test_events)
 
 
-list_of_new_events = [] # TODO: проверить можно ли обойтись без этой переменной
+list_of_new_events = [] 
 
 
 def connect_to_db():
@@ -48,14 +48,14 @@ def create_events_table():
     cursor.execute("""
             CREATE TABLE IF NOT EXISTS events(
             id SERIAL PRIMARY KEY,
-            title VARCHAR(100) DEFAULT 'NO_TITLE',
+            title VARCHAR(200) DEFAULT 'NO_TITLE',
             event_date DATE, 
             date_added DATE DEFAULT CURRENT_TIMESTAMP
             );
             """)
     cursor.close()
 
-    print("Successful connection to Database.")
+    print("Successful connection to Database.\n")
 
 
 def convert_str_to_date(string: str):
@@ -84,7 +84,7 @@ def get_list_of_events():
     "Returns list of Events"
 
     events_list = []
-    query = "SELECT * FROM events"
+    query = "SELECT * FROM events ORDER BY event_date"
     raw_data = execute_query(query).fetchall()
 
     for record in raw_data:
@@ -110,27 +110,44 @@ def put_list_of_events(list_of_events: list):
     """
 
     global list_of_new_events
+    today = datetime.date.today()
     db_list_of_events = get_list_of_events()
 
-    def check_for_duplicates():
+
+    def check_for_outdates(list_of_events: list):
+        filtered_list = []
+
+        for event in list_of_events:
+            if event.event_date >= today: 
+                filtered_list.append(event)
+
+        return filtered_list
+
+
+    def check_for_duplicates(list_of_events: list):
+        filtered_list = list_of_events.copy()
+
         for db_event in db_list_of_events:
+            if len(filtered_list) == 0: break
             for event in list_of_events:
                 if (event.title == db_event.title 
                         and event.event_date == db_event.event_date):
-                    list_of_events.remove(event)
+                    filtered_list.remove(event)
                     break
-                
-            if len(list_of_events) == 0: break
 
-    # Put non-duplicated events in DB
-    check_for_duplicates()
+        return filtered_list
+
+
+    # Put filtered list of events in DB
+    list_of_events = check_for_outdates(list_of_events)
+    list_of_events = check_for_duplicates(list_of_events)
     for event in list_of_events:
         execute_query("INSERT INTO events(title, event_date) " + 
                 "VALUES('" + event.title + "', '" + str(event.event_date) + 
                 "');")
 
     list_of_new_events = list_of_events
-    return list_of_events
+    return list_of_new_events 
 
 
 def get_events_sheduled_for(number_of_days):
@@ -163,9 +180,12 @@ def clear_overdues():
 create_events_table()
 
 
-# TODO: delete debug-section
 #---------------------------------------------------------------------- 
 # DEBUG
 #---------------------------------------------------------------------- 
 if __name__ == "__main__":
-    create_events_table()
+    use_postgreSQL = True
+    use_SQLite = False
+    put_list_of_events(list_of_test_events)
+    print("GLOBAL list_of_new_events:", [i.title for i in list_of_new_events])
+
