@@ -4,15 +4,15 @@ import time
 
 from config import (token_discord, refresh_time)
 import bot_discord
-import parser_master 
+import parsers 
 import db_handler 
 
 
 def start_bots():
-    ParserMaster = parser_master.ParserMaster()
+    KlinParkParser = parsers.KlinParkParser()
 
     db_handler.put_list_of_events(
-            ParserMaster.parse_urls_from_config()) # update DB
+            KlinParkParser.get_list_of_new_events()) # update DB
 
     thread_discord = threading.Thread(target=bot_discord.bot.run(token_discord),
             name='thrd-DiscordBot', daemon=True)

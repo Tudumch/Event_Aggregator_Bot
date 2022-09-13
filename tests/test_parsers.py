@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-import parser_minors
+import parsers
 
 class Parser_Minors_test(TestCase):
 
