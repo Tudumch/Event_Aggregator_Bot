@@ -4,12 +4,15 @@ import time
 
 from config import (token_discord, refresh_time)
 import bot_discord
-from parser_master import parse_urls_from_config
+import parser_master 
 import db_handler 
 
 
 def start_bots():
-    db_handler.put_list_of_events(parse_urls_from_config()) # update db
+    ParserMaster = parser_master.ParserMaster()
+
+    db_handler.put_list_of_events(
+            ParserMaster.parse_urls_from_config()) # update DB
 
     thread_discord = threading.Thread(target=bot_discord.bot.run(token_discord),
             name='thrd-DiscordBot', daemon=True)
@@ -17,7 +20,7 @@ def start_bots():
 
     time.sleep(refresh_time)
 
-    thread_discord.cancel()
+    thread_discord.cancel() # TODO: need to fix that
 
 
 while True:
