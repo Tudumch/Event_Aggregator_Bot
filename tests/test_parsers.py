@@ -1,15 +1,25 @@
-from unittest import TestCase, main
-import parsers
+import requests
 
-class Parser_Minors_test(TestCase):
+
+from unittest import TestCase, main
+from parsers import KlinParkParser
+
+
+class parsersTest(TestCase):
 
     def setUp(self):
-        self.KlinParkParser = parser_minors.KlinParkParser()
-        self.KlinCityParser = parser_minors.KlinCityParser()
+        self.KlinParkParser = KlinParkParser()
     
-    def test_returns_not_empty_list(self):
+
+    def test_urls_availability(self):
+        response_KlinPark = requests.get(self.KlinParkParser._url).status_code
+        self.assertEqual(response_KlinPark, 200)
+
+
+    def test_returns_list(self):
+        list_of_events = self.KlinParkParser.get_list_of_new_events()
+        self.assertEqual(type(list_of_events), list)
   
-        self.assertEqual(type(self.KlinParkParser.run()), type(list))
 
 
 if __name__ == "__main__":

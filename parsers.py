@@ -11,25 +11,9 @@ import entities
 class MinorParser(ABC):
     "Interface for parser-classes."
 
-    @abstractmethod
-    def get_soup(self, url: str):
-        pass
+    _url = ""
 
-    @abstractmethod
-    def parse_url(self, soup: BeautifulSoup):
-        pass
-
-    @abstractmethod
-    def get_list_of_new_events():
-        return list
-
-
-class KlinParkParser(MinorParser):
-    """Parse http://www.klin-park.ru/afisha/."""
-
-    __url = "http://www.klin-park.ru/afisha/"
-
-    def get_soup(self, url: str):
+    def _get_soup(self, url: str):
         response = requests.get(url)
 
         if response.status_code != 200:
@@ -38,7 +22,23 @@ class KlinParkParser(MinorParser):
         return BeautifulSoup(response.text, features="html.parser")
 
 
-    def parse_url(self, soup: BeautifulSoup):
+    @abstractmethod
+    def _parse_url(self, soup: BeautifulSoup):
+        pass
+
+
+    def get_list_of_new_events(self):
+        "Returns list of Events."
+        return self._parse_url(self._get_soup(self._url))
+
+
+
+class KlinParkParser(MinorParser):
+    """Parse http://www.klin-park.ru/afisha/."""
+
+    _url = "http://www.klin-park.ru/afisha/"
+
+    def _parse_url(self, soup: BeautifulSoup):
         "Returns list of Events."
 
         events_list = []
@@ -62,15 +62,21 @@ class KlinParkParser(MinorParser):
         return events_list
 
     
-    def get_list_of_new_events(self):
-        "Returns list of Events."
-        return self.parse_url(self.get_soup(self.__url))
 
 
 
 # !!! TODO: need to rewrite:
 class KlinCityParser(MinorParser):
     "Parse https://www.klincity.ru/events/"
+
+    _url = "https://www.klincity.ru/events/"
+
+    def get_soup(self):
+        pass
+    def parse_url(self):
+        pass
+    def get_list_of_new_events(self):
+        pass
 
     def run(self, soup: BeautifulSoup):
         events_list = []
