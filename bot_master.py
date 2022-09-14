@@ -2,8 +2,9 @@
 This module implements all custum functions accessible for bots.
 """
 
-import config
-import db_handler
+from db_handlers import DB_handler, list_of_new_events
+
+from parsers import KlinParkParser
 
 
 greetings_message = ("Привет!\n"
@@ -11,6 +12,12 @@ greetings_message = ("Привет!\n"
 "найду на клинских сайтах новостей.\n"
 "А по команде '/week' я могу показать список всех городских мероприятий, "
 "которые пройдут в ближайшие 7 дней.")
+
+db_handler = DB_handler()
+KlinParkParser = KlinParkParser()
+list_of_parsed_events = KlinParkParser.get_list_of_new_events() # update DB
+
+list_of_new_events = db_handler.put_list_of_events(list_of_parsed_events)
 
 def make_message_from_events(list_of_events: list):
     """
@@ -37,7 +44,7 @@ def get_new_events():
     Gets newly added events from var in main-function and returns them as a 
     text for bots.
     """
-    return make_message_from_events(db_handler.list_of_new_events)
+    return make_message_from_events(list_of_new_events)
 
 
 
