@@ -2,7 +2,7 @@
 This module implements all custum functions accessible for bots.
 """
 
-from db_handlers import DB_handler, list_of_new_events
+from db_handlers import DB_handler
 
 from parsers import KlinParkParser
 
@@ -14,6 +14,8 @@ greetings_message = ("Привет!\n"
 "которые пройдут в ближайшие 7 дней.")
 
 db_handler = DB_handler()
+db_handler.create_events_table()
+
 KlinParkParser = KlinParkParser()
 list_of_parsed_events = KlinParkParser.get_list_of_new_events() # update DB
 

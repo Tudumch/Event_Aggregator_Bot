@@ -41,6 +41,29 @@ class DB_handler():
         print("Successful connection to Database.\n")
         return cursor
 
+    def create_events_table(self):
+        """
+        Connects to DB and checks is there 'events'-table.
+        If there is none - create new one.
+        """
+
+        # SQLite and postgres have different types of values for id-row
+        if use_SQLite:
+            id_row = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+        else:
+            id_row = "id SERIAL PRIMARY KEY,"
+
+        query = (" CREATE TABLE IF NOT EXISTS events(" + 
+                id_row + """
+                title VARCHAR(200) DEFAULT 'NO_TITLE',
+                event_date DATE, 
+                date_added DATE DEFAULT CURRENT_TIMESTAMP
+                );
+                """)
+
+        self.execute_query(query)
+        print("'events' table successfuly created!")
+
     def execute_query(self, query: str):
         """
         Connects to DB and executes SQL-query.
@@ -77,30 +100,6 @@ class DB_handler():
 
         print("Events from DB received!")
         return events_list
-
-    def create_events_table(self):
-        """
-        Connects to DB and checks is there 'events'-table.
-        If there is none - create new one.
-        """
-
-        # SQLite and postgres have different types of values for id-row
-        if use_SQLite:
-            id_row = "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-        else:
-            id_row = "id SERIAL PRIMARY KEY,"
-
-        query = (" CREATE TABLE IF NOT EXISTS events(" + 
-                id_row + """
-                title VARCHAR(200) DEFAULT 'NO_TITLE',
-                event_date DATE, 
-                date_added DATE DEFAULT CURRENT_TIMESTAMP
-                );
-                """)
-
-        self.execute_query(query)
-
-        print("'events' table successfuly created!")
 
     def _convert_str_to_date(self, string: str):
         """
@@ -195,6 +194,7 @@ class DB_handler():
 #---------------------------------------------------------------------- 
 if __name__ == "__main__":
     db_handler = DB_handler()
+    db_handler.create_events_table()
     db_handler.put_list_of_events(list_of_test_events)
     db_handler.execute_query("""INSERT INTO events(title, event_date)
 VALUES('sfdsdsfsdf', '2022-09-03')""")
