@@ -10,15 +10,19 @@ import psycopg2
 
 
 from entities import Event
-from config import (use_SQLite, use_postgreSQL, pSQL_adress, pSQL_db_name, 
-        pSQL_password, pSQL_username, SQLite_db_path, list_of_test_events)
+from config import (use_SQLite, use_postgreSQL, db_connection_dict)
 
 
 class DB_handler():
-    def __init__(self):
+    def __init__(self, con_dict=db_connection_dict):
         self._list_of_new_events = []
         self._use_SQLite = use_SQLite
         self._use_postgreSQL = use_postgreSQL 
+        self.SQLite_db_path = con_dict.get("lite_db_name")
+        self.pSQL_adress = con_dict.get("postg_adress")
+        self.pSQL_db_name = con_dict.get("postg_db_name")
+        self.pSQL_username = con_dict.get("postg_username")
+        self.pSQL_password = con_dict.get("postg_password")
 
     def connect_to_db(self):
         """
@@ -27,12 +31,12 @@ class DB_handler():
         """
 
         if self._use_SQLite:
-            with sqlite3.connect(SQLite_db_path) as con: 
+            with sqlite3.connect(self.SQLite_db_path) as con: 
                 cursor = con.cursor()
 
         elif self._use_postgreSQL:
-            with psycopg2.connect(host=pSQL_adress, database=pSQL_db_name,
-                    user=pSQL_username, password=pSQL_password) as con:
+            with psycopg2.connect(host=self.pSQL_adress, database=self.pSQL_db_name,
+                    user=self.pSQL_username, password=self.pSQL_password) as con:
                 con.autocommit = True 
                 cursor = con.cursor() 
         else:
@@ -71,7 +75,7 @@ class DB_handler():
         """
 
         if use_SQLite:
-            with sqlite3.connect(SQLite_db_path) as con: 
+            with sqlite3.connect(self.SQLite_db_path) as con: 
                 cursor = con.cursor()
                 cursor.execute(query)
         else:
@@ -195,9 +199,6 @@ class DB_handler():
 if __name__ == "__main__":
     db_handler = DB_handler()
     db_handler.create_events_table()
-    db_handler.put_list_of_events(list_of_test_events)
     db_handler.execute_query("""INSERT INTO events(title, event_date)
 VALUES('sfdsdsfsdf', '2022-09-03')""")
-    print("GLOBAL list_of_new_events:", [i.title for i in 
-        list_of_new_events])
 
