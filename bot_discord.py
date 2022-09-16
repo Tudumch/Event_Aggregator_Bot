@@ -1,10 +1,11 @@
 import discord
 
-import bot_master
+from bot_master import Bot_Master_Parent
 import config
 
 
 bot = discord.Bot()
+bot_master = Bot_Master_Parent
 
 
 @bot.event
@@ -27,7 +28,5 @@ async def week(ctx):
     if len(message) > 0:
         await ctx.respond(message)
     else:
-        await ctx.respond("""
-        На следующие 7 дней я не смог найти запланированных мероприятий.
-        """)
+        await ctx.respond(bot_master.weekly_events_not_found_message)
 

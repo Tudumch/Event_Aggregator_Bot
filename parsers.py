@@ -7,6 +7,8 @@ import requests
 import entities
 
 
+# TODO: _url should be in constructor
+
 class MinorParser(ABC):
     """Interface for parser-classes."""
 
