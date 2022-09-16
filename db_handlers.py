@@ -42,7 +42,7 @@ class DB_handler():
         else:
             raise ValueError("Didn't set prefered DB in config-file!")
 
-        print("Successful connection to Database.\n")
+        print("Successful connected to Database.\n")
         return cursor
 
     def create_events_table(self):
@@ -64,9 +64,7 @@ class DB_handler():
                 date_added DATE DEFAULT CURRENT_TIMESTAMP
                 );
                 """)
-
         self.execute_query(query)
-        print("'events' table successfuly created!")
 
     def execute_query(self, query: str):
         """
@@ -102,7 +100,6 @@ class DB_handler():
 
             events_list.append(Event(event_id, event_title, event_date, event_added))
 
-        print("Events from DB received!")
         return events_list
 
     def _convert_str_to_date(self, string: str):
@@ -160,7 +157,6 @@ class DB_handler():
                     "VALUES('" + event.title + "', '" + str(event.event_date) + 
                     "');")
 
-        print("Data has wrote into DB successfuly!")
 
         list_of_new_events = list_of_events
         return list_of_new_events 
