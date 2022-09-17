@@ -7,12 +7,11 @@ import requests
 import entities
 
 
-# TODO: _url should be in constructor
-
 class MinorParser(ABC):
     """Interface for parser-classes."""
 
-    _url = ""
+    def __init__(self):
+        self._url = ""
 
     def _get_soup(self, url: str):
         response = requests.get(url)
@@ -34,7 +33,8 @@ class MinorParser(ABC):
 class KlinParkParser(MinorParser):
     """Parse http://www.klin-park.ru/afisha/."""
 
-    _url = "http://www.klin-park.ru/afisha/"
+    def __init__(self):
+        self._url = "http://www.klin-park.ru/afisha/"
 
     def _parse_url(self, soup: BeautifulSoup):
         "Returns list of Events."
