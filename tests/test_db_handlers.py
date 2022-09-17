@@ -105,13 +105,17 @@ class DB_handlers_test(TestCase):
         """
 
         db_handler.create_events_table()
+        db_handler.execute_query("DELETE FROM events;")
+
         for event in list_of_test_events:
             db_handler.execute_query("INSERT INTO events(title, event_date) " + 
                     "VALUES('" + event.title + "', '" + str(event.event_date) + 
                     "');")
+
         events_list = db_handler.get_list_of_events()
         self.assertEqual(["Doors Day", "Windows Day", "Locks Day"], 
                 [e.title for e in events_list])
+
         db_handler.clear_overdues()
         events_list = db_handler.get_list_of_events()
         self.assertEqual(["Windows Day", "Locks Day"], 

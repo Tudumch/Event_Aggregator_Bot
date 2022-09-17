@@ -12,7 +12,7 @@ bot_master = Bot_Master_Parent
 async def on_ready():
     print(f"We have logged in as {bot.user}")
     channel = bot.get_channel(config.discord_bot_channel_id)
-    message = bot_master.get_new_events()
+    message = bot_master.get_message_with_new_events()
     if len(message) > 0:
         await channel.send(content=message)
 
@@ -24,7 +24,7 @@ async def start(ctx):
 
 @bot.slash_command()
 async def week(ctx):
-    message = bot_master.get_weekly_list()
+    message = bot_master.get_message_with_weekly_events()
     if len(message) > 0:
         await ctx.respond(message)
     else:
