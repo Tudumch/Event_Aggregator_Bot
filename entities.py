@@ -1,5 +1,7 @@
 import datetime
 
+from log_handler import logger
+
 class Event:
 
     def __init__(self, event_id: int, title: str, event_date: datetime.date, 
@@ -15,6 +17,7 @@ class Event:
     @event_id.setter
     def event_id(self, event_id: int):
         if type(event_id) != int:
+            logger.error("Error occured when try to set event_id!")
             raise ValueError(".event_id type must be int!")
         self.__event_id = event_id
 
@@ -24,6 +27,7 @@ class Event:
     @title.setter
     def title(self, title: str):
         if type(title) != str:
+            logger.error("Error occured when try to set event_title!")
             raise ValueError(".title type must be str!")
         self.__title = title
 
@@ -33,6 +37,7 @@ class Event:
     @event_date.setter
     def event_date(self, date: datetime.date):
         if type(date) != datetime.date:
+            logger.error("Error occured when try to set event_date!")
             raise ValueError(".event_date type must be datetime.date!")
         self.__event_date = date
 
@@ -42,6 +47,7 @@ class Event:
     @date_added.setter
     def date_added(self, date: datetime.date):
         if type(date) != datetime.date:
+            logger.error("Error occured when try to set event_date_added!")
             raise ValueError(".event_date type must be datetime.date!")
         self.__date_added = date
 

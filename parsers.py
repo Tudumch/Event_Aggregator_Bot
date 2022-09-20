@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 
 import entities
+from log_handler import logger
 
 
 class MinorParser(ABC):
@@ -18,6 +19,7 @@ class MinorParser(ABC):
 
         if response.status_code != 200:
             print("!!! Parsing error for " + url)
+            logger.error("parsers.py: couldn't parse " + url)
 
         return BeautifulSoup(response.text, features="html.parser")
 
@@ -31,7 +33,9 @@ class MinorParser(ABC):
 
 
 class KlinParkParser(MinorParser):
-    """Parse http://www.klin-park.ru/afisha/."""
+    """
+    Parser for http://www.klin-park.ru/afisha/
+    """
 
     def __init__(self):
         self._url = "http://www.klin-park.ru/afisha/"

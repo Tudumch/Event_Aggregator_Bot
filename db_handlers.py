@@ -9,12 +9,14 @@ import sqlite3
 import psycopg2
 
 
+from log_handler import logger
 from entities import Event
 from config import (use_SQLite, use_postgreSQL, db_connection_dict)
 
 
 class DB_handler():
     def __init__(self, con_dict=db_connection_dict):
+        logger.debug("DB_handler constructor starts...")
         self._list_of_new_events = []
         self._use_SQLite = use_SQLite
         self._use_postgreSQL = use_postgreSQL 
@@ -23,6 +25,7 @@ class DB_handler():
         self.pSQL_db_name = con_dict.get("postg_db_name")
         self.pSQL_username = con_dict.get("postg_username")
         self.pSQL_password = con_dict.get("postg_password")
+        logger.debug("DB_handler constructor executed successfuly!")
 
     def connect_to_db(self):
         """
@@ -40,9 +43,15 @@ class DB_handler():
                 con.autocommit = True 
                 cursor = con.cursor() 
         else:
+            logger.critical("Didn't set variables for prefered DB in config-file!")
             raise ValueError("Didn't set prefered DB in config-file!")
 
-        print("Successful connected to Database.\n")
+        print(type(cursor))
+        if type(cursor) != (sqlite3.Cursor): # TODO: add check for type of cursor for postgress too
+            logger.critical("DB Cursor-variable is not Cursor-type!")
+            raise ValueError("cursor-variable should be type sqlite3.Cursor or ...")
+
+        logger.info("Successful connected to Database.")
         return cursor
 
     def create_events_table(self):
