@@ -7,12 +7,10 @@ from log_handler import logger
 import bot_discord
 
 
-logger.debug("MAIN: run.")
-
 def start_bots():
     """
     Infinetly restartable function for refreshing DB and bots. By restrting, 
-    bots notify users about new evevnts.
+    bots notify users about new events.
     """
 
     logger.info("MAIN: starting bot-threads...")
