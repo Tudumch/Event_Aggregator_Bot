@@ -33,14 +33,20 @@ class DB_handlers_test(TestCase):
         self.db_handler.put_list_of_events(list_of_test_events)
 
     def test_get_message_with_new_events(self):
-        correct_str = ("Doors Day\n2022-03-01\n\nLocks Day\n2028-03-09\n\n" + 
-                "Windows Day\n2022-09-23\n\n")
+        correct_str = ("Doors Day\n2022-03-01\n\nLocks Day\n" +
+                str(datetime.date.today() + datetime.timedelta(days=2000)) +
+                "\n\n" + 
+                "Windows Day\n" + 
+                str(datetime.date.today() + datetime.timedelta(days=6)) + 
+                "\n\n")
         result_str = self.bot_master.get_message_with_new_events(
                 list_of_test_events)
         self.assertEqual(result_str, correct_str)
 
     def test_get_message_with_weekly_events(self):
-        correct_str = "Windows Day\n2022-09-23\n\n"
+        correct_str = ("Windows Day\n" + 
+                str(datetime.date.today() + datetime.timedelta(days=6)) + 
+                "\n\n")
         result_str = self.bot_master.get_message_with_weekly_events()
         self.assertEqual(result_str, correct_str)
 
