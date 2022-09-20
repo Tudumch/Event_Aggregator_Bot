@@ -46,10 +46,11 @@ class DB_handler():
             logger.critical("Didn't set variables for prefered DB in config-file!")
             raise ValueError("Didn't set prefered DB in config-file!")
 
-        print(type(cursor))
-        if type(cursor) != (sqlite3.Cursor): # TODO: add check for type of cursor for postgress too
+        if ((type(cursor) != sqlite3.Cursor) and 
+        (type(cursor) != psycopg2.extensions.cursor)): 
             logger.critical("DB Cursor-variable is not Cursor-type!")
-            raise ValueError("cursor-variable should be type sqlite3.Cursor or ...")
+            raise ValueError("""cursor-variable should be type sqlite3.Cursor or 
+                    psycopg2.extensions.cursor""")
 
         logger.info("Successful connected to Database.")
         return cursor
