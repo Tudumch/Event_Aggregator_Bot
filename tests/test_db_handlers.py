@@ -41,7 +41,7 @@ class DB_handlers_test(TestCase):
     def test_connection_to_db(self):
         cursor = db_handler.connect_to_db()
         if len(SQLite_db_path.split("/")) == 1:
-            self.assertTrue(os.path.isfile("../" + SQLite_db_path))
+            self.assertTrue(os.path.isfile("./" + SQLite_db_path))
         else:
             self.assertTrue(os.path.isfile(SQLite_db_path))
         self.assertIsInstance(cursor, sqlite3.Cursor)
