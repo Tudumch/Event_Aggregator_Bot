@@ -1,6 +1,7 @@
 from db_handlers import DB_handler
 
 from parsers import KlinParkParser as KPP
+from log_handler import logger
 
 
 greetings_message = ("Привет!\n"
@@ -60,8 +61,11 @@ class BotMaster():
 
 
 # One Bot_Master-instance for all different platforms bot-instances access:
+
+logger.info("botmaster.py: creating BotMaster...")
 Bot_Master_Parent = BotMaster(DB_handler())
 Bot_Master_Parent.refresh_db()
+logger.info("botmaster.py: BotMaster successfuly created.")
 
 
 if __name__ == "__main__":

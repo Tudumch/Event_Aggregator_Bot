@@ -7,7 +7,7 @@ import sqlite3
 
 
 from db_handlers import DB_handler
-from config import SQLite_db_path, use_postgreSQL 
+from config import SQLite_db_path, use_SQLite
 from entities import Event
 
 
@@ -39,6 +39,8 @@ class DB_handlers_test(TestCase):
             os.remove(test_db_name)
 
     def test_connection_to_db(self):
+        if use_SQLite == False:
+            return 0
         cursor = db_handler.connect_to_db()
         if len(SQLite_db_path.split("/")) == 1:
             self.assertTrue(os.path.isfile("./" + SQLite_db_path))

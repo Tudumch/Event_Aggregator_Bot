@@ -39,8 +39,6 @@ pSQL_username = "postgres"
 pSQL_password = ""
 pSQL_db_name = "Event_Aggregator"
 
-#use_SQLite, use_postgreSQL = use_postgreSQL, use_SQLite # TODO: delete this line!
-
 db_connection_dict = {"lite_db_name": SQLite_db_path, 
         "postg_db_name": pSQL_db_name, "postgr_adress": pSQL_adress, 
         "postgr_username": pSQL_username, "postgr_password": pSQL_password}
@@ -50,7 +48,6 @@ def readTokenFromFile(filePath):
 
     with open(filePath, "r") as file:
         return file.read().rstrip()
-        breakpoint()
 
 token_discord = readTokenFromFile(discord_bot_token_filePath)
 
