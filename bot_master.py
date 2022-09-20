@@ -1,9 +1,6 @@
-"""
-This module implements all custum functions accessible for bots.
-"""
+from db_handlers import DB_handler
 
-import config
-import db_handler
+from parsers import KlinParkParser as KPP
 
 
 greetings_message = ("Привет!\n"
@@ -11,34 +8,62 @@ greetings_message = ("Привет!\n"
 "найду на клинских сайтах новостей.\n"
 "А по команде '/week' я могу показать список всех городских мероприятий, "
 "которые пройдут в ближайшие 7 дней.")
+weekly_events_not_found_message = """
+        На следующие 7 дней я не смог найти запланированных мероприятий.
+        """
 
-def make_message_from_events(list_of_events: list):
+
+class BotMaster():
     """
-    Concatinates event titile and event_date attrs of every Event in 
-    one string message for future sending into messages.
+    Class through which bot-instances centrally receive various information 
+    about events from DB.
     """
 
-    list_of_stringed_events = ""
-    for event in list_of_events:
-        list_of_stringed_events += (event.title + "\n" +
-                str(event.event_date) + "\n\n")
-    return list_of_stringed_events
+    def __init__(self, db_handler: DB_handler):
+        self.db_handler = db_handler
+        self.greetings_message = greetings_message
+        self.weekly_events_not_found_message = weekly_events_not_found_message
+        self.list_of_new_events = []
+
+    def refresh_db(self):
+        """
+        Create 'events'-table into DB if it not exists already, gets new parsed 
+        events from parsers and puts only newly, none-duplicated events into DB.
+        Updates self.list_of_new_events var.
+        """
+        self.db_handler.create_events_table()
+
+        KlinParkParser = KPP()
+        list_of_parsed_events = KlinParkParser.get_list_of_new_events() # update DB
+        self.list_of_new_events = self.db_handler.put_list_of_events(
+                list_of_parsed_events)
+
+    def get_message_with_new_events(self, list_of_events=[]):
+        """
+        Concatinates event title and event_date attrs of every Event in list 
+        into one string message for future sending into messengers.
+        """
+
+        if len(list_of_events) == 0:
+            list_of_events = self.list_of_new_events
+
+        list_of_stringed_events = ""
+
+        for event in list_of_events:
+            list_of_stringed_events += (event.title + "\n" +
+                    str(event.event_date) + "\n\n")
+        return list_of_stringed_events
+
+    def get_message_with_weekly_events(self):
+        "Returns string of events that will happen in next 7 days."
+        return self.get_message_with_new_events(self.db_handler.get_events_sheduled_for(7))
 
 
+# One Bot_Master-instance for all different platforms bot-instances access:
+Bot_Master_Parent = BotMaster(DB_handler())
+Bot_Master_Parent.refresh_db()
 
 
-def get_weekly_list():
-    "Returns string of events that will happen in next 7 days."
-    return make_message_from_events(db_handler.get_events_sheduled_for(7))
-
-
-def get_new_events():
-    """
-    Gets newly added events from var in main-function and returns them as a 
-    text for bots.
-    """
-    return make_message_from_events(db_handler.list_of_new_events)
-
-
-
+if __name__ == "__main__":
+    bot_master = BotMaster(DB_handler())
 
