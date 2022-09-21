@@ -1,6 +1,6 @@
 from db_handlers import DB_handler
 
-from parsers import KlinParkParser as KPP
+from parsers import KlinParkParser, KlinCityParser 
 from log_handler import logger
 
 
@@ -34,8 +34,11 @@ class BotMaster():
         """
         self.db_handler.create_events_table()
 
-        KlinParkParser = KPP()
-        list_of_parsed_events = KlinParkParser.get_list_of_new_events() # update DB
+        KPP = KlinParkParser()
+        KCP = KlinCityParser()
+        list_of_parsed_events = (KPP.get_list_of_new_events() + 
+                KCP.get_list_of_new_events())
+
         self.list_of_new_events = self.db_handler.put_list_of_events(
                 list_of_parsed_events)
 
@@ -62,10 +65,10 @@ class BotMaster():
 
 # One Bot_Master-instance for all different platforms bot-instances access:
 
-logger.info("botmaster.py: creating BotMaster...")
+logger.info("Creating BotMaster...")
 Bot_Master_Parent = BotMaster(DB_handler())
 Bot_Master_Parent.refresh_db()
-logger.info("botmaster.py: BotMaster successfuly created.")
+logger.info("BotMaster successfuly created.")
 
 
 if __name__ == "__main__":

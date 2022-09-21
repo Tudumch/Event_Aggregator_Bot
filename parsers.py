@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
 import datetime
-import requests
-from bs4 import BeautifulSoup
-import requests
+import re
 
-import entities
+from bs4 import BeautifulSoup
+import urllib.request
+import ssl
+
+from entities import Event
 from log_handler import logger
 
-
+        
 class MinorParser(ABC):
     """Interface for parser-classes."""
 
@@ -15,13 +17,13 @@ class MinorParser(ABC):
         self._url = ""
 
     def _get_soup(self, url: str):
-        response = requests.get(url)
+        scontext = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS_CLIENT)
+        scontext.check_hostname = False
+        scontext.verify_mode = ssl.VerifyMode.CERT_NONE
+        with urllib.request.urlopen(url = url, context=scontext) as f:
+            response = f.read()
 
-        if response.status_code != 200:
-            print("!!! Parsing error for " + url)
-            logger.error("parsers.py: couldn't parse " + url)
-
-        return BeautifulSoup(response.text, features="html.parser")
+        return BeautifulSoup(response, features="html.parser")
 
     @abstractmethod
     def _parse_url(self, soup: BeautifulSoup):
@@ -57,29 +59,26 @@ class KlinParkParser(MinorParser):
             event_date = datetime.date(int(raw_event_date[2]),
                                        int(raw_event_date[1]), int(raw_event_date[0]))
 
-            event = entities.Event(0, event_title, event_date,
+            event = Event(0, event_title, event_date,
                                    datetime.date.today())
             events_list.append(event)
+
+        if len(events_list) == 0:
+            logger.warning("Not found any events at " + self._url + " ! " + 
+                    "Perhaps need to change parser-template...")
 
         return events_list
 
 
-# !!! TODO: need to rewrite:
 class KlinCityParser(MinorParser):
-    """Parse https://www.klincity.ru/events/"""
+    """
+    Parse https://www.klincity.ru/events/
+    """
 
-    _url = "https://www.klincity.ru/events/"
+    def __init__(self):
+        self._url = "https://www.klincity.ru/events/"
 
-    def get_soup(self):
-        pass
-
-    def parse_url(self):
-        pass
-
-    def get_list_of_new_events(self):
-        pass
-
-    def run(self, soup: BeautifulSoup):
+    def _parse_url(self, soup: BeautifulSoup):
         events_list = []
         raw_events_list = soup.findAll('div',
                                        class_="shved-item")
@@ -87,24 +86,29 @@ class KlinCityParser(MinorParser):
         for raw_event in raw_events_list:
             event_title = raw_event.find('div',
                                          class_="head").text
-
             raw_preview_list = raw_event.find('div',
                                               class_="preview_text")
-            print(raw_preview_list)
 
-            """
+            # looking for any dates in raw_preview_list with REGEX:
+            raw_event_date = re.findall(r"\d\d\.\d\d\.\d\d\d\d", 
+                    str(raw_preview_list))[0].split(".")
             event_date = datetime.date(int(raw_event_date[2]),
                     int(raw_event_date[1]), int(raw_event_date[0]))
-
-            event = entities.Event(0, event_title, event_date, 
+            
+            event = Event(0, event_title, event_date, 
                     datetime.date.today())
-
             events_list.append(event)
-            """
+
+        if len(events_list) == 0:
+            logger.warning("Not found any events at " + self._url + " ! " + 
+                    "Perhaps need to change parser-template...")
+
         return events_list
 
 
 if __name__ == "__main__":
     parser1 = KlinParkParser()
-    test_list = parser1.get_list_of_new_events()
-    print(test_list)
+    test_list1 = parser1.get_list_of_new_events()
+    parser2 = KlinCityParser()
+    test_list2 = parser2.get_list_of_new_events()
+    print(test_list1 + test_list2)
