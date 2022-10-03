@@ -41,6 +41,7 @@ class BotMaster():
 
         self.list_of_new_events = self.db_handler.put_list_of_events(
                 list_of_parsed_events)
+        self.db_handler.clear_overdues()
 
     def get_message_with_new_events(self, list_of_events=[]):
         """

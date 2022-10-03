@@ -1,8 +1,7 @@
-import threading
 import time
+import multiprocessing
 
-
-from config import token_discord, refresh_time
+from config import refresh_time
 from log_handler import logger
 import bot_discord
 
@@ -14,20 +13,16 @@ def start_bots():
     """
 
     logger.info("Starting bot-threads...")
-    thread_discord = threading.Thread(target=bot_discord.bot.run(token_discord),
-            name='thrd-DiscordBot', daemon=True)
-    thread_discord.start()
+    discord_process = multiprocessing.Process(target=bot_discord.main)
+    discord_process.start()
     logger.info("Discord bot thread has been run.")
-
     time.sleep(refresh_time)
-    logger.info("Refresh time is out - initiating restarting process...")
-
+    logger.info("Refresh time is out - initiating restart process...")
     logger.info("Closing bot-threads...")
-    thread_discord.cancel() # TODO: need to fix that
-    logger.info("Bot-threads closed successfuly.")
-
+    discord_process.terminate()
+    logger.info("All bot-threads have been closed successfuly.")
 
 while True:
     start_bots()
-
+    time.sleep(5) # timeout for sure that all client-bots are closed
 
