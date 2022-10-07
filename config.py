@@ -7,13 +7,18 @@
 # path to file in which placed your token for doscord-bot
 # (see https://docs.pycord.dev/en/v2.0.0/discord.html#discord-intro 
 # to know how to get one):
-discord_bot_token_filePath = "discord_token"
+discord_bot_token_filepath = "discord_token"
 
 # !!!
 # provide ID of channel of your discord-server which will be used for 
 # notifications about new events
 # (see https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
 discord_bot_channel_id = 1010249090010988586
+
+# !!!
+# path to file in which placed your token for telegram-bot
+# (see https://core.telegram.org/bot to know how to get one):
+telegram_bot_token_filepath = "telegram_token"
 
 # urls which will be parsed by parser:
 urls_for_parsing = ["http://www.klin-park.ru/afisha/"] 
@@ -49,7 +54,8 @@ def readTokenFromFile(filePath):
     with open(filePath, "r") as file:
         return file.read().rstrip()
 
-token_discord = readTokenFromFile(discord_bot_token_filePath)
+token_discord = readTokenFromFile(discord_bot_token_filepath)
+token_telegram = readTokenFromFile(telegram_bot_token_filepath)
 
 
 # ---------------------------------------------------------------------- 
