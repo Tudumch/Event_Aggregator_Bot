@@ -26,10 +26,7 @@ def main():
     @bot.slash_command()
     async def week(ctx):
         message = bot_master.get_message_with_weekly_events()
-        if len(message) > 0:
-            await ctx.respond(message)
-        else:
-            await ctx.respond(bot_master.weekly_events_not_found_message)
+        await ctx.respond(message)
 
 
 if __name__ == "__main__":

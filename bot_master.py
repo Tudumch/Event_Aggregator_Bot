@@ -61,7 +61,11 @@ class BotMaster():
 
     def get_message_with_weekly_events(self):
         "Returns string of events that will happen in next 7 days."
-        return self.get_message_with_new_events(self.db_handler.get_events_sheduled_for(7))
+        message = self.get_message_with_new_events(self.db_handler.get_events_sheduled_for(7))
+        if message == "":
+            return "На следующие 7 дней мероприятий не запланированно."
+        else:
+            return message
 
 
 # One Bot_Master-instance for all different platforms bot-instances access:
