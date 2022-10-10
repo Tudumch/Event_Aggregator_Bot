@@ -57,7 +57,7 @@ class DB_handler():
 
     def create_events_table(self):
         """
-        Connects to DB and checks is there 'events'-table.
+        Connects to DB and checks is there 'events' table.
         If there is none - create new one.
         """
 
@@ -75,6 +75,19 @@ class DB_handler():
                 );
                 """)
         self.execute_query(query)
+
+    def create_telegram_table(self):
+        """
+        Connects to DB and checks is there 'telegram_data' table.
+        If there is none - create new one.
+        """
+
+        query = """CREATE TABLE IF NOT EXISTS telegram_data(
+                type VARCHAR(200) DEFAULT 'NO_TYPE',
+                id INT DEFAULT 0);
+                """
+        self.execute_query(query)
+
 
     def execute_query(self, query: str):
         """
@@ -198,6 +211,18 @@ class DB_handler():
                 WHERE event_date < CURRENT_DATE;
                 """)
 
+    def get_all_telegram_users_id(self):
+        """
+        Returns list of ids.
+        """
+        pass
+        # TODO: implement this function
+
+    def add_telegram_user_id(self, user_id: int):
+        query = ("INSERT INTO telegram_data(type, id) " + 
+                 "VALUES('user_id', '" + str(user_id) + "');")
+        self.execute_query(query)
+
 
 #---------------------------------------------------------------------- 
 # DEBUG
@@ -205,6 +230,10 @@ class DB_handler():
 if __name__ == "__main__":
     db_handler = DB_handler()
     db_handler.create_events_table()
+    db_handler.create_telegram_table()
     db_handler.execute_query("""INSERT INTO events(title, event_date)
 VALUES('sfdsdsfsdf', '2022-09-03')""")
+    db_handler.execute_query("""INSERT INTO telegram_data(type, id)
+VALUES('user_id', 124321)""")
+    db_handler.add_telegram_user_id(777777)
 

@@ -67,6 +67,9 @@ class BotMaster():
         else:
             return message
 
+    def add_telegram_user(self, user_id):
+        self.db_handler.add_telegram_user_id(user_id)
+
 
 # One Bot_Master-instance for all different platforms bot-instances access:
 
