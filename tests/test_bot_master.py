@@ -4,7 +4,7 @@ import datetime
 from unittest import TestCase
 from bot_master import BotMaster 
 from entities import Event
-from db_handlers import DB_handler
+from db_handler import DB_handler
 
 
 # Test-DB config:

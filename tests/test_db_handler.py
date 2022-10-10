@@ -6,7 +6,7 @@ from unittest import TestCase
 import sqlite3
 
 
-from db_handlers import DB_handler
+from db_handler import DB_handler
 from config import SQLite_db_path, use_SQLite
 from entities import Event
 

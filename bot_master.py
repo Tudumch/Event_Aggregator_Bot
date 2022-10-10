@@ -1,4 +1,4 @@
-from db_handlers import DB_handler
+from db_handler import DB_handler
 
 from parsers import KlinParkParser, KlinCityParser 
 from log_handler import logger
